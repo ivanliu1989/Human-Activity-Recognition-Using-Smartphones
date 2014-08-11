@@ -59,5 +59,10 @@ run_analysis <- function(){
     ##apply(harus.tidy,2,class)
     
 # 5.Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
-        
+    lapply(harus.tidy[,1:66],as.numeric)    
+    #harus.tidy.2 <- ddply(harus.tidy[,1:68], .(activity, subject), mean)
+    library(reshape)
+    harus.molten <- melt(harus.tidy, id.vars=c("activity","subject"))
+    harus.cast <- cast(subject + variable ~ activity, data = harus.molten, fun = mean)
+    
 }
