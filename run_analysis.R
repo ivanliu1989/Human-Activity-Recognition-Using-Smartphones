@@ -2,7 +2,7 @@ run_analysis <- function(){
     
     setwd("C:/Documents and Settings/Macro/Desktop/Ivandata/Human-Activity-Recognition-Using-Smartphones/")
     
-    # 1.Merges the training and the test sets to create one data set.
+# 1.Merges the training and the test sets to create one data set.
     harus.url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
     harus.file <- basename(harus.url)
     if(!(file.exists(harus.file))){
@@ -28,16 +28,22 @@ run_analysis <- function(){
     names(harus.data)
     sum(table(harus.data[,1]))
     
-    # 2.Extracts only the measurements on the mean and standard deviation for each measurement. 
+# 2.Extracts only the measurements on the mean and standard deviation for each measurement. 
+    harus.col <- names(harus.data)
+    measure.mean <- "mean()"
+    measure.std <- "std()"
+    a <- grepl(measure.mean,harus.col,fixed=T)
+    b <- grepl(measure.std,harus.col,fixed=T)
+    c <- a | b
+    ##harus.data.mean <- harus.data[,grep(measure.mean,harus.col)]
+    ##harus.data.std <- harus.data[,grep(measure.std,harus.col)]
+    ##harus.data.sub <- cbind(harus.data.mean,harus.data.std)
+    harus.subset <- harus.data[,c]
+        
+# 3.Uses descriptive activity names to name the activities in the data set.
     
-    # 3.Uses descriptive activity names to name the activities in the data set.
+# 4.Appropriately labels the data set with descriptive variable names. 
     
-    # 4.Appropriately labels the data set with descriptive variable names. 
-    
-    # 5.Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
-    
-    
-    
-    
-    
+# 5.Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+        
 }
