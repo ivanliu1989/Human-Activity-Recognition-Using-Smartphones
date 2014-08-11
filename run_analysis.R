@@ -67,4 +67,6 @@ run_analysis <- function(){
     harus.molten <- melt(harus.tidy, id.vars=c("activity","subject"))
     harus.cast <- cast(subject + variable ~ activity, data = harus.molten, fun = mean)
     ##head(harus.cast)
+    write.table(harus.tidy, "./tidy_dataset.csv", sep=",")
+    write.table(harus.cast, "./tidy_dataset_avg.csv", sep=",")
 }
