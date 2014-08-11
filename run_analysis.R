@@ -43,6 +43,7 @@ run_analysis <- function(){
         
 # 3.Uses descriptive activity names to name the activities in the data set.
     harus.subset$y <- harus.data[,562]
+    harus.subset$Subject <- harus.data[,563]
     names(harus.subset) <- gsub("\\()","", names(harus.subset))
     act.name <- read.table(harus.file.list[1])
     colnames(act.name)<-c("y","Activity")
@@ -51,10 +52,11 @@ run_analysis <- function(){
     table(harus.all$y, harus.all$Activity)
     
 # 4.Appropriately labels the data set with descriptive variable names. 
-    
-    
-    
-    
+    harus.tidy <- harus.all[,-67]    
+    names(harus.tidy) <- gsub("-","",tolower(names(harus.tidy)))
+    harus.tidy$subject <- as.factor(harus.tidy$subject)
+    harus.tidy$activity <- as.factor(harus.tidy$activity)
+    ##apply(harus.tidy,2,class)
     
 # 5.Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
         
