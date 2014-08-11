@@ -1,5 +1,6 @@
 ###README: Human-Activity-Recognition-Using-Smartphones
 #####This analysis performs a data cleansing process and generate tidy datasets at the end. Specifically, it follows following steps:
+========================================================
 
 #####1. Merges the training and the test sets to create one data set.
 
