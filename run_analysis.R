@@ -8,6 +8,7 @@ run_analysis <- function(){
     if(!(file.exists(harus.file))){
         download.file(harus.url,destfile=harus.file,method="auto")        
     }
+    ##harus.file.list <- basename(unzip(harus.file))
     harus.file.list <- unzip(harus.file)
     ##test.list <- 5:13
     ##train.list <- 17:25
