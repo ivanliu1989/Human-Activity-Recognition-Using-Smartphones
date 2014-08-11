@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>This analysis performs a data cleansing process and generate tidy datasets at the end. Specifically, it follows following steps:</title>
+<title></title>
 
 <!-- Styles for R syntax highlighter -->
 <style type="text/css">
@@ -187,9 +187,10 @@ hr {
 </head>
 
 <body>
-<h2>This analysis performs a data cleansing process and generate tidy datasets at the end. Specifically, it follows following steps:</h2>
+<p>###README: Human-Activity-Recognition-Using-Smartphones
+#####This analysis performs a data cleansing process and generate tidy datasets at the end. Specifically, it follows following steps:</p>
 
-<h4>1. Merges the training and the test sets to create one data set.</h4>
+<p>#####1. Merges the training and the test sets to create one data set.</p>
 
 <pre><code class="r">#acquire url and name of raw dataset
 harus.url &lt;- &quot;https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip&quot;
@@ -226,12 +227,147 @@ rownum &lt;- sum(table(harus.data[,1]))
 
 <p>There are 10299 observations in the dataset created in step 1, and the first variables are tBodyAcc-mean()-X, tBodyAcc-mean()-Y, tBodyAcc-mean()-Z. </p>
 
-<ol>
-<li>Extracts only the measurements on the mean and standard deviation for each measurement. </li>
-<li>Uses descriptive activity names to name the activities in the data set</li>
-<li>Appropriately labels the data set with descriptive variable names. </li>
-<li>Creates a second, independent tidy data set with the average of each variable for each activity and each subject. </li>
-</ol>
+<p>#####2. Extracts only the measurements on the mean and standard deviation for each measurement. </p>
+
+<pre><code class="r">#obtain the entire list of variables of dataset
+harus.col &lt;- names(harus.data)
+
+#claim the key measurements (mean, std) we want to keep in new dataset
+measure.mean &lt;- &quot;mean()&quot;
+measure.std &lt;- &quot;std()&quot;
+
+#identify the columns we want to keep and the columns we want to eliminate
+#and implement these modifications to dataset
+a &lt;- grepl(measure.mean,harus.col,fixed=T)
+b &lt;- grepl(measure.std,harus.col,fixed=T)
+c &lt;- a | b
+harus.subset &lt;- harus.data[,c]
+
+#print the remaining measurements in subsetted dataset
+names(harus.subset)
+</code></pre>
+
+<pre><code>##  [1] &quot;tBodyAcc-mean()-X&quot;           &quot;tBodyAcc-mean()-Y&quot;          
+##  [3] &quot;tBodyAcc-mean()-Z&quot;           &quot;tBodyAcc-std()-X&quot;           
+##  [5] &quot;tBodyAcc-std()-Y&quot;            &quot;tBodyAcc-std()-Z&quot;           
+##  [7] &quot;tGravityAcc-mean()-X&quot;        &quot;tGravityAcc-mean()-Y&quot;       
+##  [9] &quot;tGravityAcc-mean()-Z&quot;        &quot;tGravityAcc-std()-X&quot;        
+## [11] &quot;tGravityAcc-std()-Y&quot;         &quot;tGravityAcc-std()-Z&quot;        
+## [13] &quot;tBodyAccJerk-mean()-X&quot;       &quot;tBodyAccJerk-mean()-Y&quot;      
+## [15] &quot;tBodyAccJerk-mean()-Z&quot;       &quot;tBodyAccJerk-std()-X&quot;       
+## [17] &quot;tBodyAccJerk-std()-Y&quot;        &quot;tBodyAccJerk-std()-Z&quot;       
+## [19] &quot;tBodyGyro-mean()-X&quot;          &quot;tBodyGyro-mean()-Y&quot;         
+## [21] &quot;tBodyGyro-mean()-Z&quot;          &quot;tBodyGyro-std()-X&quot;          
+## [23] &quot;tBodyGyro-std()-Y&quot;           &quot;tBodyGyro-std()-Z&quot;          
+## [25] &quot;tBodyGyroJerk-mean()-X&quot;      &quot;tBodyGyroJerk-mean()-Y&quot;     
+## [27] &quot;tBodyGyroJerk-mean()-Z&quot;      &quot;tBodyGyroJerk-std()-X&quot;      
+## [29] &quot;tBodyGyroJerk-std()-Y&quot;       &quot;tBodyGyroJerk-std()-Z&quot;      
+## [31] &quot;tBodyAccMag-mean()&quot;          &quot;tBodyAccMag-std()&quot;          
+## [33] &quot;tGravityAccMag-mean()&quot;       &quot;tGravityAccMag-std()&quot;       
+## [35] &quot;tBodyAccJerkMag-mean()&quot;      &quot;tBodyAccJerkMag-std()&quot;      
+## [37] &quot;tBodyGyroMag-mean()&quot;         &quot;tBodyGyroMag-std()&quot;         
+## [39] &quot;tBodyGyroJerkMag-mean()&quot;     &quot;tBodyGyroJerkMag-std()&quot;     
+## [41] &quot;fBodyAcc-mean()-X&quot;           &quot;fBodyAcc-mean()-Y&quot;          
+## [43] &quot;fBodyAcc-mean()-Z&quot;           &quot;fBodyAcc-std()-X&quot;           
+## [45] &quot;fBodyAcc-std()-Y&quot;            &quot;fBodyAcc-std()-Z&quot;           
+## [47] &quot;fBodyAccJerk-mean()-X&quot;       &quot;fBodyAccJerk-mean()-Y&quot;      
+## [49] &quot;fBodyAccJerk-mean()-Z&quot;       &quot;fBodyAccJerk-std()-X&quot;       
+## [51] &quot;fBodyAccJerk-std()-Y&quot;        &quot;fBodyAccJerk-std()-Z&quot;       
+## [53] &quot;fBodyGyro-mean()-X&quot;          &quot;fBodyGyro-mean()-Y&quot;         
+## [55] &quot;fBodyGyro-mean()-Z&quot;          &quot;fBodyGyro-std()-X&quot;          
+## [57] &quot;fBodyGyro-std()-Y&quot;           &quot;fBodyGyro-std()-Z&quot;          
+## [59] &quot;fBodyAccMag-mean()&quot;          &quot;fBodyAccMag-std()&quot;          
+## [61] &quot;fBodyBodyAccJerkMag-mean()&quot;  &quot;fBodyBodyAccJerkMag-std()&quot;  
+## [63] &quot;fBodyBodyGyroMag-mean()&quot;     &quot;fBodyBodyGyroMag-std()&quot;     
+## [65] &quot;fBodyBodyGyroJerkMag-mean()&quot; &quot;fBodyBodyGyroJerkMag-std()&quot;
+</code></pre>
+
+<p>#####3. Uses descriptive activity names to name the activities in the data set</p>
+
+<pre><code class="r">#add two new columns representing activity and subject
+harus.subset$y &lt;- harus.data[,562]
+harus.subset$Subject &lt;- harus.data[,563]
+
+#remove special characters like &#39;()&#39; in column names to make them more readable
+names(harus.subset) &lt;- gsub(&quot;\\()&quot;,&quot;&quot;, names(harus.subset))
+
+#load the activity_labels.txt file and make its column names be identical to the names in main dataset
+act.name &lt;- read.table(harus.file.list[1])
+colnames(act.name)&lt;-c(&quot;y&quot;,&quot;Activity&quot;)
+
+#load plyr package to do the merging process that adds activity labels to each observation in dataset 
+library(plyr)
+harus.all &lt;- arrange(join(harus.subset, act.name),y)
+</code></pre>
+
+<pre><code>## Joining by: y
+</code></pre>
+
+<pre><code class="r">#print the activity distribution by subject
+table(harus.all$y, harus.all$Activity)
+</code></pre>
+
+<pre><code>##    
+##     LAYING SITTING STANDING WALKING WALKING_DOWNSTAIRS WALKING_UPSTAIRS
+##   1      0       0        0    1722                  0                0
+##   2      0       0        0       0                  0             1544
+##   3      0       0        0       0               1406                0
+##   4      0    1777        0       0                  0                0
+##   5      0       0     1906       0                  0                0
+##   6   1944       0        0       0                  0                0
+</code></pre>
+
+<p>#####4. Appropriately labels the data set with descriptive variable names. </p>
+
+<pre><code class="r">#remove duplicated variable
+harus.tidy &lt;- harus.all[,-67]
+
+#remove special characters (&quot;-&quot;) in column names and transfer the names to lowercases
+names(harus.tidy) &lt;- gsub(&quot;-&quot;,&quot;&quot;,tolower(names(harus.tidy)))
+
+#transfer subject and activity to factors for the convinience of further analysis
+harus.tidy$subject &lt;- as.factor(harus.tidy$subject)
+harus.tidy$activity &lt;- as.factor(harus.tidy$activity)
+</code></pre>
+
+<p>#####5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. </p>
+
+<pre><code class="r">#remove the unnecessary std related variables in dataset
+d &lt;- grepl(&quot;std&quot;,names(harus.tidy),fixed=T)    
+harus.tidy &lt;- harus.tidy[,!d]
+
+#use reshape package to melt the dataset with activity and subject as ids and the rest are variables
+library(reshape)
+harus.molten &lt;- melt(harus.tidy, id.vars=c(&quot;activity&quot;,&quot;subject&quot;))
+
+#restructure the dataset into the one with the average of each variable by each activity and subject
+harus.cast &lt;- cast(subject + variable ~ activity, data = harus.molten, fun = mean)
+
+#print the first 5 rows of constructed dataset
+head(harus.cast,n=5)
+</code></pre>
+
+<pre><code>##   subject         variable   LAYING   SITTING STANDING  WALKING
+## 1       1    tbodyaccmeanx  0.22160  0.261238  0.27892  0.27733
+## 2       1    tbodyaccmeany -0.04051 -0.001308 -0.01614 -0.01738
+## 3       1    tbodyaccmeanz -0.11320 -0.104544 -0.11060 -0.11115
+## 4       1 tgravityaccmeanx -0.24888  0.831510  0.94295  0.93522
+## 5       1 tgravityaccmeany  0.70555  0.204412 -0.27298 -0.28217
+##   WALKING_DOWNSTAIRS WALKING_UPSTAIRS
+## 1           0.289188          0.25546
+## 2          -0.009919         -0.02395
+## 3          -0.107566         -0.09730
+## 4           0.931874          0.89335
+## 5          -0.266610         -0.36215
+</code></pre>
+
+<pre><code class="r">#output the tidy main dataset and tidy average dataset
+write.table(harus.tidy, &quot;./tidy_dataset.csv&quot;, sep=&quot;,&quot;)
+write.table(harus.cast, &quot;./tidy_dataset_avg.csv&quot;, sep=&quot;,&quot;)
+</code></pre>
+
+<p>Thank you for reading!
+Ivan Liu</p>
 
 </body>
 

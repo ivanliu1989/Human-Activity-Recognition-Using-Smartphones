@@ -1,6 +1,7 @@
-## This analysis performs a data cleansing process and generate tidy datasets at the end. Specifically, it follows following steps:
+###README: Human-Activity-Recognition-Using-Smartphones
+#####This analysis performs a data cleansing process and generate tidy datasets at the end. Specifically, it follows following steps:
 
-#### 1. Merges the training and the test sets to create one data set.
+#####1. Merges the training and the test sets to create one data set.
 
 ```{r step1, echo=TRUE}
 #acquire url and name of raw dataset
@@ -37,16 +38,79 @@ rownum <- sum(table(harus.data[,1]))
 ```
 There are `r rownum` observations in the dataset created in step 1, and the first variables are `r colna`. 
 
+#####2. Extracts only the measurements on the mean and standard deviation for each measurement. 
+```{r step2, echo=TRUE}
+#obtain the entire list of variables of dataset
+harus.col <- names(harus.data)
 
+#claim the key measurements (mean, std) we want to keep in new dataset
+measure.mean <- "mean()"
+measure.std <- "std()"
 
+#identify the columns we want to keep and the columns we want to eliminate
+#and implement these modifications to dataset
+a <- grepl(measure.mean,harus.col,fixed=T)
+b <- grepl(measure.std,harus.col,fixed=T)
+c <- a | b
+harus.subset <- harus.data[,c]
 
+#print the remaining measurements in subsetted dataset
+names(harus.subset)
+```
 
+#####3. Uses descriptive activity names to name the activities in the data set
+```{r step3, echo=TRUE}
+#add two new columns representing activity and subject
+harus.subset$y <- harus.data[,562]
+harus.subset$Subject <- harus.data[,563]
 
+#remove special characters like '()' in column names to make them more readable
+names(harus.subset) <- gsub("\\()","", names(harus.subset))
 
+#load the activity_labels.txt file and make its column names be identical to the names in main dataset
+act.name <- read.table(harus.file.list[1])
+colnames(act.name)<-c("y","Activity")
 
+#load plyr package to do the merging process that adds activity labels to each observation in dataset 
+library(plyr)
+harus.all <- arrange(join(harus.subset, act.name),y)
 
+#print the activity distribution by subject
+table(harus.all$y, harus.all$Activity)
+```
 
-2. Extracts only the measurements on the mean and standard deviation for each measurement. 
-3. Uses descriptive activity names to name the activities in the data set
-4. Appropriately labels the data set with descriptive variable names. 
-5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+#####4. Appropriately labels the data set with descriptive variable names. 
+```{r step4,echo=TRUE}
+#remove duplicated variable
+harus.tidy <- harus.all[,-67]
+
+#remove special characters ("-") in column names and transfer the names to lowercases
+names(harus.tidy) <- gsub("-","",tolower(names(harus.tidy)))
+
+#transfer subject and activity to factors for the convinience of further analysis
+harus.tidy$subject <- as.factor(harus.tidy$subject)
+harus.tidy$activity <- as.factor(harus.tidy$activity)
+```
+
+#####5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+```{r step5,echo=TRUE}
+#remove the unnecessary std related variables in dataset
+d <- grepl("std",names(harus.tidy),fixed=T)    
+harus.tidy <- harus.tidy[,!d]
+
+#use reshape package to melt the dataset with activity and subject as ids and the rest are variables
+library(reshape)
+harus.molten <- melt(harus.tidy, id.vars=c("activity","subject"))
+
+#restructure the dataset into the one with the average of each variable by each activity and subject
+harus.cast <- cast(subject + variable ~ activity, data = harus.molten, fun = mean)
+
+#print the first 5 rows of constructed dataset
+head(harus.cast,n=5)
+
+#output the tidy main dataset and tidy average dataset
+write.table(harus.tidy, "./tidy_dataset.csv", sep=",")
+write.table(harus.cast, "./tidy_dataset_avg.csv", sep=",")
+```
+Thank you for reading!
+Ivan Liu
