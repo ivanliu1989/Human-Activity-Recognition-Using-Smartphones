@@ -34,6 +34,7 @@ run_analysis <- function(){
     measure.std <- "std()"
     a <- grepl(measure.mean,harus.col,fixed=T)
     b <- grepl(measure.std,harus.col,fixed=T)
+    
     c <- a | b
     ##harus.data.mean <- harus.data[,grep(measure.mean,harus.col)]
     ##harus.data.std <- harus.data[,grep(measure.std,harus.col)]
@@ -41,8 +42,19 @@ run_analysis <- function(){
     harus.subset <- harus.data[,c]
         
 # 3.Uses descriptive activity names to name the activities in the data set.
+    harus.subset$y <- harus.data[,562]
+    names(harus.subset) <- gsub("\\()","", names(harus.subset))
+    act.name <- read.table(harus.file.list[1])
+    colnames(act.name)<-c("y","Activity")
+    library(plyr)
+    harus.all <- arrange(join(harus.subset, act.name),y)
+    table(harus.all$y, harus.all$Activity)
     
 # 4.Appropriately labels the data set with descriptive variable names. 
+    
+    
+    
+    
     
 # 5.Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
         
