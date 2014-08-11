@@ -12,6 +12,8 @@ run_analysis <- function(){
     harus.file.list <- unzip(harus.file)
     ##test.list <- 5:13
     ##train.list <- 17:25
+    features <- read.table(file=harus.file.list[2])
+    feature.names <- features[,2]
     x.test <- read.table(file=harus.file.list[15])
     y.test <- read.table(file=harus.file.list[16])
     subject.test <- read.table(file=harus.file.list[14])
@@ -22,8 +24,10 @@ run_analysis <- function(){
     test.merged <- cbind(x.test,y.test,subject.test)
     train.merged <- cbind(x.train,y.train,subject.train)
     harus.data <- rbind(train.merged,test.merged)
+    colnames(harus.data)<-c(as.vector(feature.names),"y","subject")
     names(harus.data)
     sum(table(harus.data[,1]))
+    
     # 2.Extracts only the measurements on the mean and standard deviation for each measurement. 
     
     # 3.Uses descriptive activity names to name the activities in the data set.
