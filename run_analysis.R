@@ -1,6 +1,6 @@
 run_analysis <- function(){
     
-    setwd("C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/Human-Activity-Recognition-Using-Smartphones/")
+    setwd("C:/Documents and Settings/Macro/Desktop/Ivandata/Human-Activity-Recognition-Using-Smartphones")
     
 # 1.Merges the training and the test sets to create one data set.
     harus.url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
@@ -67,6 +67,6 @@ run_analysis <- function(){
     harus.molten <- melt(harus.tidy, id.vars=c("activity","subject"))
     harus.cast <- cast(subject + variable ~ activity, data = harus.molten, fun = mean)
     ##head(harus.cast)
-    write.table(harus.tidy, "./tidy_dataset.csv", sep=",")
-    write.table(harus.cast, "./tidy_dataset_avg.csv", sep=",")
+    write.table(harus.tidy, "./tidy_dataset.txt", row.name=F)
+    write.table(harus.cast, "./tidy_dataset_avg.txt", row.name=F)
 }
